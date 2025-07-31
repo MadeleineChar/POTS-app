@@ -1,0 +1,37 @@
+import json
+import os
+
+class DataManager:
+    def __init__(self, filename="data/data.json"):
+        self.filename = filename
+        self.symptoms = []
+        self.heartRates = []
+        self.loadData()
+
+    def loadData(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, "r") as file:
+                data = json.load(file)
+                self.symptoms = data.get("symptoms", [])
+                self.heartRates = data.get("heartRates", [])
+        else:
+            self.symptoms = []
+            self.heartRates = []
+
+    def saveData(self):
+        data = {
+            "symptoms": self.symptoms,
+            "heartRates": self.heartRates
+        }
+        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        with open(self.filename, "w") as file:
+            json.dump(data, file, indent=4)
+
+    def addSymptom(self, symptom):
+        self.symptoms.append(symptom)
+        self.saveData()
+
+    def addHR(self, hr):
+        self.heartRates.append(hr)
+        self.saveData()
+
