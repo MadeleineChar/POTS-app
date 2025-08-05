@@ -1,4 +1,6 @@
 import tkinter as tk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 from tkinter import messagebox
 from data_manager import DataManager
 
@@ -30,8 +32,8 @@ class MainGUI:
         tk.Button(self.root, text="💓 Track Heart Rate\nRecord your heart rate reading", command=self.inputHR,
                   bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=30, height=3).pack(pady=10)
 
-        tk.Button(self.root, text="📊 View Graphs\nComing soon - visualize your data", state="disabled",
-                  bg="#E0E0E0", fg="#888888", font=("Poppins", 12), width=30, height=3).pack(pady=10)
+        tk.Button(self.root, text="📊 View Graphs\nVisualize your data", command=self.showGraphMenu,
+                  bg="#BTN_COLOR", fg="#BTN_TEXT_COLOR", font=("Poppins", 12), width=30, height=3).pack(pady=10)
 
         tk.Button(self.root, text="🚪 Exit\nClose the app", command=self.root.quit,
                   bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=30, height=3).pack(pady=10)
@@ -84,3 +86,29 @@ class MainGUI:
 
         tk.Button(self.root, text="🔙 Back", command=self.mainMenu,
                   bg="#E0E0E0", fg="#000000", font=("Poppins", 10), width=10).pack(pady=5)
+
+    def showGraphMenu(self):
+        self.clearFrame()
+        tk.Label(self.root, text="📊 View Graphs", bg=BG_COLOR, fg=HEADER_COLOR, font("Poppins",18, "bold")).pack(pady=20)
+            tk.Button(self.root, text="💓 Heart Rate Trends", command=self.plotHRGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
+            tk.Button(self.root, text="📝 Symptom Frequency", command=self.plotSymptomGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
+            tk.Button(self.root, text="🔙 Back", command=self.mainMenu, bg="#E0E0E0", fg="#000000", font=("Poppins", 10), width=10).pack(pady=20)
+
+    def plotHRGraph(self_:
+        dates,hr_values = self.dataManagger.getHRData()
+        fig,ax = plt.subplots(figsize=(8, 4))
+        ax.plot(dates, hr_values, marker='o', color='A594F9', linewidth=2)
+        ax.set_title ("Heart Rate Trends", fontweight='bold')
+        ax.set_xlabel("Date")
+        ax.set_ylabel("BPM")
+        ax.grid(True, linestyle='--', alpha=0.6)
+
+        self.clearFrame()
+        canvas = FigureCanvasTkAgg(fig, master=self.root)
+        canvas.draw()
+        canvas.get_tk_widget().pack(pady=20)
+
+
+        
+
+                    
