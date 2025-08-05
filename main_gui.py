@@ -9,6 +9,7 @@ BTN_COLOR = "#CDC1FF"
 BTN_TEXT_COLOR = "#000000"
 HEADER_COLOR = "#A594F9"
 
+
 class MainGUI:
     def __init__(self, root):
         self.root = root
@@ -33,7 +34,7 @@ class MainGUI:
                   bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=30, height=3).pack(pady=10)
 
         tk.Button(self.root, text="📊 View Graphs\nVisualize your data", command=self.showGraphMenu,
-                  bg="#BTN_COLOR", fg="#BTN_TEXT_COLOR", font=("Poppins", 12), width=30, height=3).pack(pady=10)
+                  bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=30, height=3).pack(pady=10)
 
         tk.Button(self.root, text="🚪 Exit\nClose the app", command=self.root.quit,
                   bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=30, height=3).pack(pady=10)
@@ -52,7 +53,7 @@ class MainGUI:
         def saveSymptom():
             symptom = symptom_entry.get("1.0", tk.END).strip()
             if symptom:
-                self.dataManager.addSymptom(symptom)
+                self.dataManager.add_symptom(symptom)
                 messagebox.showinfo("Success", "Symptom saved successfully.")
                 self.mainMenu()
             else:
@@ -75,7 +76,7 @@ class MainGUI:
         def saveHR():
             hr = hr_entry.get().strip()
             if hr.isdigit():
-                self.dataManager.addHR(int(hr))
+                self.dataManager.add_hr(int(hr))
                 messagebox.showinfo("Success", "Heart rate saved successfully.")
                 self.mainMenu()
             else:
@@ -89,13 +90,13 @@ class MainGUI:
 
     def showGraphMenu(self):
         self.clearFrame()
-        tk.Label(self.root, text="📊 View Graphs", bg=BG_COLOR, fg=HEADER_COLOR, font("Poppins",18, "bold")).pack(pady=20)
-            tk.Button(self.root, text="💓 Heart Rate Trends", command=self.plotHRGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
-            tk.Button(self.root, text="📝 Symptom Frequency", command=self.plotSymptomGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
-            tk.Button(self.root, text="🔙 Back", command=self.mainMenu, bg="#E0E0E0", fg="#000000", font=("Poppins", 10), width=10).pack(pady=20)
+        tk.Label(self.root, text="📊 View Graphs", bg=BG_COLOR, fg=HEADER_COLOR, font=("Poppins",18, "bold")).pack(pady=20)
+        tk.Button(self.root, text="💓 Heart Rate Trends", command=self.plotHRGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
+        tk.Button(self.root, text="📝 Symptom Frequency", command=self.plotSymptomGraph, bg=BTN_COLOR, fg=BTN_TEXT_COLOR, font=("Poppins", 12), width=25, height=2).pack(pady=10)
+        tk.Button(self.root, text="🔙 Back", command=self.mainMenu, bg="#E0E0E0", fg="#000000", font=("Poppins", 10), width=10).pack(pady=20)
 
     def plotHRGraph(self):
-        dates,hr_values = self.dataManagger.getHRData()
+        dates,hr_values = self.dataManager.get_hr_data()
         fig,ax = plt.subplots(figsize=(8, 4))
         ax.plot(dates, hr_values, marker='o', color='#A594F9', linewidth=2)
         ax.set_title ("Heart Rate Trends", fontweight='bold')
@@ -108,19 +109,37 @@ class MainGUI:
         canvas.draw()
         canvas.get_tk_widget().pack(pady=20)
 
-        tk.Button(self.root, text= "🔙 Back", command=selfshowGraphMenu, bg="#E0E0E0", fg=#000000",font=("Poppins",10), width=10).pack(pady=10)
+        tk.Button(
+            self.root,
+            text="🔙 Back",
+            command=self.showGraphMenu,
+            bg="#E0E0E0",
+            fg="#000000",
+            font=("Poppins", 10),
+            width=10
+        ).pack(pady=10)
 
-     def plotSymptomGraph(self)   
-		sympotoms, counts = self.dataManager.getSymptomFrequency()
-        fig,ax = plt.subplots(figsize=(8, 4))
-        ax.bar(symptoms, counts, color='#CDC1FF', edgecolor='A594F9')
-        ax.set_title ("Symptom Frequency", fontweight='bold')
+    def plotSymptomGraph(self):  
+        symptoms, counts = self.dataManager.get_symptom_frequency()
+    
+        fig, ax = plt.subplots(figsize=(8, 4))
+        ax.bar(symptoms, counts, color='#CDC1FF', edgecolor='#A594F9')
+        ax.set_title("Symptom Frequency", fontweight='bold')
         ax.set_xlabel("Symptom")
-        ax.set_ylabel("Occurences")      
+        ax.set_ylabel("Occurrences")
 
-		self.clearFrame()
+    
+        self.clearFrame()
         canvas = FigureCanvasTkAgg(fig, master=self.root)
         canvas.draw()
-        canvas.get_tk_widget().pack(pady=20)		
+        canvas.get_tk_widget().pack(pady=20)
 
-		tk.Button(self.root, text= "🔙 Back", command=selfshowGraphMenu, bg="#E0E0E0", fg=#000000",font=("Poppins",10), width=10).pack(pady=10)
+        tk.Button(
+            self.root,
+            text="🔙 Back",
+            command=self.showGraphMenu,
+            bg="#E0E0E0",
+            fg="#000000",
+            font=("Poppins", 10),
+            width=10
+        ).pack(pady=10)

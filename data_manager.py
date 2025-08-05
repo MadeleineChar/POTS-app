@@ -1,0 +1,65 @@
+import json
+import os
+from datetime import datetime
+from collections import Counter
+
+class DataManager:
+    def __init__(self, filename="data/data.json"):
+        self.filename = filename
+        self.heart_rates = [] 
+        self.symptoms = []     
+        self.load_data()
+
+    def load_data(self):
+        if os.path.exists(self.filename):
+            with open(self.filename, "r") as file:
+                data = json.load(file)
+                self.symptoms = data.get("symptoms", [])
+                self.heart_rates = data.get("heartRates", [])
+
+    def save_data(self):
+        data = {
+            "symptoms": self.symptoms,
+            "heartRates": self.heart_rates
+        }
+        os.makedirs(os.path.dirname(self.filename), exist_ok=True)
+        with open(self.filename, "w") as file:
+            json.dump(data, file, indent=4)
+
+    def add_symptom(self, symptom_text):
+        entry = {
+            "text": symptom_text,
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+        self.symptoms.append(entry)
+        self.save_data()
+
+    def add_hr(self, bpm):
+        entry = {
+            "value": int(bpm),
+            "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
+        }
+        self.heart_rates.append(entry)
+        self.save_data()
+
+    # Graph Data Methods
+    def get_hr_data(self):
+        dates = [entry["timestamp"] for entry in self.heart_rates]
+        values = [entry["value"] for entry in self.heart_rates]
+        return dates, values
+
+    def get_symptom_frequency(self):
+        symptom_texts = [entry["text"] for entry in self.symptoms]
+        counts = Counter(symptom_texts)
+        return list(counts.keys()), list(counts.values())
+
+    def get_recent_hr_stats(self):
+        if not self.heart_rates:
+            return None
+        values = [entry["value"] for entry in self.heart_rates[-30:]]  # Last 30 readings
+        return {
+            "latest": values[-1],
+            "average": round(sum(values) / len(values)),
+            "min": min(values),
+            "max": max(values)
+        }
