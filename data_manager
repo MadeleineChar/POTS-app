@@ -6,8 +6,8 @@ from collections import Counter
 class DataManager:
     def __init__(self, filename="data/data.json"):
         self.filename = filename
-        self.symptoms = []       
-        self.heart_rates = []   
+        self.heart_rates = [] 
+        self.symptoms = []     
         self.load_data()
 
     def load_data(self):
@@ -34,7 +34,7 @@ class DataManager:
         self.symptoms.append(entry)
         self.save_data()
 
-    def add_heart_rate(self, bpm):
+    def add_hr(self, bpm):
         entry = {
             "value": int(bpm),
             "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M")
